@@ -49,6 +49,64 @@ This can be implemented using the current steering circuit.
 Output :
 ![image](https://user-images.githubusercontent.com/94952142/143244743-650f8a8a-586a-4e85-ac8a-428fe26f0b1a.png)
 
+When there is no Up/Down Signal, there is a leakage current which flows to the output and charges the capacitor. This affects the control voltage. 
+To avoid these fluctuations in the voltage across capacitor, we use a low pass filter. This makes the system more stable.
+The low pass filter plays a mojor role in phase lock and hence in the stability of the system.
+
+## VCO - Voltage Controlled Oscillator
+This is a ring oscillator with odd number of inverters which has a certain delay. This causes the output signal to flip after a certain delay.
+Output period = 2* Delay of inverter * no. of inverters.
+
+The frequency depends on the delay and delay in turn depends on the current.
+So, by using a current starving ring oscillator, we can control the output frequency.
+
+Circuit :
+
+
+Important terms :
+- Lock Range : Range of frequencies for which the PLL is able to stay locked. This is limited by dead zone.
+- Capture Range : Range of frequencies for which the PLL can get locked from a free running state. This depends on the bandwidth of Low Pass filter.
+- Settling time : Time take to get locked from a free running mode. This depends on the current to capacitor.
+
+
+## Frequency Divider
+For toggle Flipflop, output is half the frequency of input. This can be designe using a D-Flipflop with an inverter feeding the output back to input. 
+This gives frequency division by 2. In the same way, we can stack the T-flipflop to get frequency division by 8 and so on.
+
+Circuit :
+
+## Tools used 
+In this workshop, we are mainly going to use two tools, namely
+- magic <- For layout design and extraction
+- ngspice <- For netlist simulation
+
+I created my workspace in my laptop. To do this you can refer to this free Udemy course https://www.udemy.com/course/vsd-a-complete-guide-to-install-open-source-eda-tools/
+
+## Development flow
+- Specifications
+- SPICE-level circuit development
+- PreLayout Simulation
+- Layout Development
+- Parasitic Extraction
+- Post-Layout Simulation
+
+After Post Layout Simulation, we may have to go through the previous steps to bring the design closer to the specifications.
+
+## Introduction to PDK
+Here, are going to use sky130 PDK to design the PLL. The PDK is normally provided by the foundry which provides all the necessary components required to design any circuit.
+In this project, we mainly are going to use nmos and pmos, so our focus will be on these cells.
+
+## Specification
+- PVT
+  - Corner : TT
+  - Supply Voltage : 1.8V
+  - Room temparature
+- VCO mode and PLL mode
+- Fmin = 5MHz; FMax = 12.5MHz
+- Multiplier - 8x
+- Jitter(RMS) - 20ns
+- Duty cycle - 50%
+
 
 # Day 2: PLL Labs and post-layout simulations
 
@@ -279,7 +337,7 @@ plot v(clk2)+4 v(clk1)+4 v(up)+2 v(down)
 - V2 and V3 - Input signals at a phase difference of 6ns.
 
 - Simulation Result:
-  ![image](https://user-images.githubusercontent.com/94952142/143210048-b2f0a8d3-88e5-4b90-b909-f3b5644a862f.png)
+  ![image1](https://user-images.githubusercontent.com/94952142/143210048-b2f0a8d3-88e5-4b90-b909-f3b5644a862f.png)
 
 - Simulation Result(Zoomed): 
   ![image](https://user-images.githubusercontent.com/94952142/143209934-cc16e94a-cbd4-4291-9e65-e4398ff89015.png)
@@ -554,7 +612,18 @@ Zoomed:
       - After confirming the final design, save the file as `GDS` file by `File`->`Write GDS`.
       
 ## Tapeout
-      
-      
-      
-https://user-images.githubusercontent.com/94952142/143188652-1d3ca24f-7fe0-4ae7-a1bb-e16d14fe161c.png)
+
+It means to send out final design to Fab, after preparing it.
+Preparation:
+- I/O pads
+- Peripherals
+- Memory
+- Testing Mechanisms
+- Any other requirements
+
+Caravel is a type of SoC, on which the PLL block is a part. The block is designed with the provided specs and sent to integrate it in the SoC.
+The GDS with pin layout is provided by fab which needs to be instantiated along with the PLL block. After this, the connections are made between the PLL block pins and top level pins.
+And after making sure the final design with the Pin connections meet all the requirement, we send the final GDS back to fab where this is integrated on the SoC and then manufactured.
+
+# Conclusion
+This two -day workshop helped in getting familiar with the open source EDA tools and open source PDKS. The PLL basics was explained very clearly and design aspects of the circuit were introduced. This workshop also explained the tapeout related aspects of any design. This workshop has helped me gain better understanding of concepts and tools.     
