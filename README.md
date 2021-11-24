@@ -567,9 +567,11 @@ Refer to this website for magic command: [http://www.ece.iit.edu/~eoruklu/course
 After this, the already tapeout ready layout for individual blocks and the complete block are introduced. 
 
 To open a magic layout file(eg: CP.mag), use the following command :
+
 ![image](https://user-images.githubusercontent.com/94952142/143220331-899b239b-4354-47c5-9271-2da2aac49f05.png)
 
 This opens the layout file as follows:
+
 ![image](https://user-images.githubusercontent.com/94952142/143220230-6c9a8f78-81cf-49a8-ac74-ba626bc42116.png)
         
 ![image](https://user-images.githubusercontent.com/94952142/143220519-4356a733-678c-4607-9e31-c0a3bf30f138.png)
