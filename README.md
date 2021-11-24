@@ -37,21 +37,39 @@ When the freq of REF signal is higher -> UP gets activated
 The best way to detect the falling edge/rising edge is by using flipflops.
 We here use negative edge triggered flipflops.
 
-PFD Circuit :
+### PFD Circuit :
+
 ![image](https://user-images.githubusercontent.com/94952142/143242951-e835483f-97db-4129-94be-a9c50209a442.png)
 
 ## Charge Pump
-This is used to convert the digital phase / frequency difference into an analog control signal to control the VCO.
+A charge pump is used to convert the digital phase / frequency difference into an analog control signal to control the VCO
 This can be implemented using the current steering circuit.
+
+### Operation:
 ![image](https://user-images.githubusercontent.com/94952142/143244541-957badd8-3d77-4691-ab33-1d68eeb209b2.png)
 ![image](https://user-images.githubusercontent.com/94952142/143244587-ca1eafe9-ed6a-4d80-b626-3f01612c2c7d.png)
 
-Output :
-![image](https://user-images.githubusercontent.com/94952142/143244743-650f8a8a-586a-4e85-ac8a-428fe26f0b1a.png)
+### Output:
+
+![image](https://user-images.githubusercontent.com/94952142/143258113-816f716d-1667-47fa-8b44-cbc85d8ff90c.png)
+![image](https://user-images.githubusercontent.com/94952142/143258025-6e14c5cc-bb37-4969-8e47-6f5f564b41c4.png)
+
+### Circuit Implementation:
+
+![image](https://user-images.githubusercontent.com/94952142/143258651-010911e7-3584-4485-a1b8-09f18b6717b0.png)
 
 When there is no Up/Down Signal, there is a leakage current which flows to the output and charges the capacitor. This affects the control voltage. 
 To avoid these fluctuations in the voltage across capacitor, we use a low pass filter. This makes the system more stable.
 The low pass filter plays a mojor role in phase lock and hence in the stability of the system.
+
+- Loop filter Band Width = 1/1+RC1, where C1 = (C\*Cx)/(C+Cx)
+- Cx =~ C/10
+- Bandwidth of LP filter = Highest Output frequency/10
+
+### Circuit with low pass filter :
+
+![image](https://user-images.githubusercontent.com/94952142/143258761-bd86a82f-f8a3-4016-93d5-a99565acfa7c.png)
+
 
 ## VCO - Voltage Controlled Oscillator
 This is a ring oscillator with odd number of inverters which has a certain delay. This causes the output signal to flip after a certain delay.
@@ -60,10 +78,11 @@ Output period = 2* Delay of inverter * no. of inverters.
 The frequency depends on the delay and delay in turn depends on the current.
 So, by using a current starving ring oscillator, we can control the output frequency.
 
-Circuit :
+### Circuit Implementation:
 
+![image](https://user-images.githubusercontent.com/94952142/143259608-2d2d585c-a677-40a2-aa07-ef7427d3772b.png)
 
-Important terms :
+###Important terms :
 - Lock Range : Range of frequencies for which the PLL is able to stay locked. This is limited by dead zone.
 - Capture Range : Range of frequencies for which the PLL can get locked from a free running state. This depends on the bandwidth of Low Pass filter.
 - Settling time : Time take to get locked from a free running mode. This depends on the current to capacitor.
@@ -73,14 +92,17 @@ Important terms :
 For toggle Flipflop, output is half the frequency of input. This can be designe using a D-Flipflop with an inverter feeding the output back to input. 
 This gives frequency division by 2. In the same way, we can stack the T-flipflop to get frequency division by 8 and so on.
 
-Circuit :
+### Circuit and Operation:
+
+![image](https://user-images.githubusercontent.com/94952142/143259813-19a21406-d5fa-48b7-8a20-ca97a0d4fefe.png)
+
 
 ## Tools used 
 In this workshop, we are mainly going to use two tools, namely
 - magic <- For layout design and extraction
 - ngspice <- For netlist simulation
 
-I created my workspace in my laptop. To do this you can refer to this free Udemy course https://www.udemy.com/course/vsd-a-complete-guide-to-install-open-source-eda-tools/
+I created my workspace in my laptop. To do this you can refer to this free Udemy [course](https://www.udemy.com/course/vsd-a-complete-guide-to-install-open-source-eda-tools/)
 
 ## Development flow
 - Specifications
@@ -164,13 +186,13 @@ plot v(6) v(Clk)+2
 ## PLL components circuit design
 
 - Simulate the FreqDiv.cir using the command `ngspice FreqDiv.cir`
-- Simulation result :
-  ![2_3](https://user-images.githubusercontent.com/94952142/143198483-e3eb6a36-b52b-4c9d-bf9a-5720010a3b5d.png)
+### - Simulation result :
+![2_3](https://user-images.githubusercontent.com/94952142/143198483-e3eb6a36-b52b-4c9d-bf9a-5720010a3b5d.png)
 - The first signal is the input signal and the second one is the output signal. The frequency of output is twice the input signal.
   
 ### Simulation of Charge Pump block
 - Create the spice file with connections and add the required control parameters(transient inputs).
-  - ![2_4](https://user-images.githubusercontent.com/94952142/143201250-593a7f24-e212-4132-bb33-83f745b42292.png)
+![2_4](https://user-images.githubusercontent.com/94952142/143201250-593a7f24-e212-4132-bb33-83f745b42292.png)
 
 ```
     *charge pump
@@ -216,15 +238,16 @@ plot v(6) v(Clk)+2
     * v(D) v(Clk) v(6)
     .endc
 ```
+
 - Here, V2 is the Up Signal and V3 is the Down signal. 
 - `.ic` is used to give intial contiditions.
 - Intially, we set the Up and Down signal as 0V to check for leakage with no input.
     
-- Simulation result for no input:
-   ![2_5](https://user-images.githubusercontent.com/94952142/143202413-263f7395-34b9-44b5-95ee-929e7d776d17.png)
+### - Simulation result for no input:
+![2_5](https://user-images.githubusercontent.com/94952142/143202413-263f7395-34b9-44b5-95ee-929e7d776d17.png)
 - Now, we will give pulse signal to see the response. We will try to give pulse to Up signal and the output is expected to rise. For this we need to change the v2 definition as `v2 up 0 PULSE 0 1.8 1n 6p 6p 100ns 200ns`. Also, we need to update the tran value to `tran 1ns 20us`. After making the changes and we need to simulate again.
 -Simulation result for Up signal :
- ![2_6](https://user-images.githubusercontent.com/94952142/143206090-96892c93-d6a9-48be-a4ea-a1ede08c47dc.png)
+![2_6](https://user-images.githubusercontent.com/94952142/143206090-96892c93-d6a9-48be-a4ea-a1ede08c47dc.png)
     
     
 ### Simulation for VCO
@@ -280,15 +303,17 @@ plot v(6) v(Clk)+2
       .end
 ```
 - V2 -> input control signal. The control voltage is varied to get output signals with different oscillations. 
-- Simulation result :
-  ![2_7](https://user-images.githubusercontent.com/94952142/143207883-b56b6e25-12c8-48c8-99e3-835049a3f27a.png)
-- The oscillations are full swing because we have an additional inverter at the output. Here, we are able to get proper oscillations.
+- 
+### - Simulation result :
+![2_7](https://user-images.githubusercontent.com/94952142/143207883-b56b6e25-12c8-48c8-99e3-835049a3f27a.png)
+- Here, the oscillations are full swing because we have an additional inverter at the output and hence, we are able to get proper oscillations.
     
 ### Simulation of PFD block:
-- PFD.cir :
+
+### - PFD.cir :
 ```
 *PD_10T
-.include spice_lib/sky130nm.lib
+.include spice_lib/sky130.lib
 
 xm1 1 clk1 3 1 sky130_fd_pr__pfet_01v8 l=150n w=640n 
 xm2 3 clk1 4 0 sky130_fd_pr__nfet_01v8 l=150n w=1800n
@@ -334,17 +359,18 @@ plot v(clk2)+4 v(clk1)+4 v(up)+2 v(down)
 .end
 ```
 
-- V2 and V3 - Input signals at a phase difference of 6ns.
+- Here, V2 and V3 - Input signals at a phase difference of 6ns.
 
-- Simulation Result:
-  ![image1](https://user-images.githubusercontent.com/94952142/143210048-b2f0a8d3-88e5-4b90-b909-f3b5644a862f.png)
+### - Simulation Result:
+![image1](https://user-images.githubusercontent.com/94952142/143210048-b2f0a8d3-88e5-4b90-b909-f3b5644a862f.png)
 
-- Simulation Result(Zoomed): 
-  ![image](https://user-images.githubusercontent.com/94952142/143209934-cc16e94a-cbd4-4291-9e65-e4398ff89015.png)
+### - Simulation Result(Zoomed): 
+![image](https://user-images.githubusercontent.com/94952142/143209934-cc16e94a-cbd4-4291-9e65-e4398ff89015.png)
   
-## Part 11 : Steps to combine PLL subckts and Full design simulation
+## Steps to combine PLL subckts and Full design simulation
 To run the simulation for PLL, we need to combine the individual circuits. In spice file, we need to add each block code as subckt and make connections.
-- Combined spice file:
+
+### - Combined spice file:
 ```
     *PLL
     .include spice_lib/sky130.lib
@@ -517,10 +543,11 @@ To run the simulation for PLL, we need to combine the individual circuits. In sp
 - The subckt definition starts with `.subckt <cell_name> <pin_list>` and ends with a `ends <cell_name>`. 
 - The input reference signal is a pulse signal with period of 80ns or freq of 12.5MHz.
 
--Simulation result :    
- ![image](https://user-images.githubusercontent.com/94952142/143224994-6f4e4d6c-e8d2-4f4a-9893-70aba236e774.png)
+### -Simulation result :  
+
+![image](https://user-images.githubusercontent.com/94952142/143224994-6f4e4d6c-e8d2-4f4a-9893-70aba236e774.png)
  
- ![image](https://user-images.githubusercontent.com/94952142/143225124-9fc1d9d5-6b9d-44f5-8ed2-4dbe10e6defe.png)
+![image](https://user-images.githubusercontent.com/94952142/143225124-9fc1d9d5-6b9d-44f5-8ed2-4dbe10e6defe.png)
 
  -Here, the signals are in the order 
    - Charge pump output
@@ -535,11 +562,12 @@ To run the simulation for PLL, we need to combine the individual circuits. In sp
 To open a layout, run the following command in the directory with techfile. 
   `magic -T sky130A.tech`
 After running this command, two windows opens, one is the layout window and another is the console.
-Refer to this website for magic command: http://www.ece.iit.edu/~eoruklu/courses/ece429/tutorial/MAGIC1x.html
+Refer to this website for magic command: [http://www.ece.iit.edu/~eoruklu/courses/ece429/tutorial/MAGIC1x.html](http://www.ece.iit.edu/~eoruklu/courses/ece429/tutorial/MAGIC1x.html)
       
 After this, the already tapeout ready layout for individual blocks and the complete block are introduced. 
-  - To open a magic layout file(eg: CP.mag), use the following command :
-     ![image](https://user-images.githubusercontent.com/94952142/143220331-899b239b-4354-47c5-9271-2da2aac49f05.png)
+
+To open a magic layout file(eg: CP.mag), use the following command :
+![image](https://user-images.githubusercontent.com/94952142/143220331-899b239b-4354-47c5-9271-2da2aac49f05.png)
 
 This opens the layout file as follows:
 ![image](https://user-images.githubusercontent.com/94952142/143220230-6c9a8f78-81cf-49a8-ac74-ba626bc42116.png)
@@ -556,10 +584,11 @@ This will extract the a .ext file. To convert the .ext file to .spice file,
 - Enter `ext2spice cthresh 0 rthresh 0` <- This will extract all the resistive and capacitive effect present in the design.
 
 Change the scale value from 10000u to 10n in the spice file.
-- ![image](https://user-images.githubusercontent.com/94952142/143222426-ede68bb1-6c68-4000-b926-daf495e6a307.png)
--![image](https://user-images.githubusercontent.com/94952142/143223301-7765c0ab-7a46-41eb-a70e-c18a1f08ea50.png)
+![image](https://user-images.githubusercontent.com/94952142/143222426-ede68bb1-6c68-4000-b926-daf495e6a307.png)
 
-##Post Layout Simulations
+![image](https://user-images.githubusercontent.com/94952142/143223301-7765c0ab-7a46-41eb-a70e-c18a1f08ea50.png)
+
+## Post Layout Simulations
  - Extract the PFD.mag design similar to previous section.
  - create a `PFD_postlay.cir` file and include the lib include file and PFD.spice file which got generated now.
  - PFD_postlay.cir:
@@ -585,45 +614,56 @@ Change the scale value from 10000u to 10n in the spice file.
     
 - Run ngspice on this file.
 
-- Simulation Result :
-  ![image](https://user-images.githubusercontent.com/94952142/143225989-8c2fa791-7919-41e5-ad8e-071baceef3e1.png)
+### - Simulation Result :
+![image](https://user-images.githubusercontent.com/94952142/143225989-8c2fa791-7919-41e5-ad8e-071baceef3e1.png)
       
-  ![image](https://user-images.githubusercontent.com/94952142/143226050-f0ef4c5c-69cd-40c4-8031-24c84bd99e82.png)
+![image](https://user-images.githubusercontent.com/94952142/143226050-f0ef4c5c-69cd-40c4-8031-24c84bd99e82.png)
 
-To simulate te circuit after layout, we need to run ngspice on PLL_PostLay.cir. We will get two plots. First is the post layou plot with the sequence similar to pre layout. Second plot has the output and reference signal.
+To simulate te circuit after layout, we need to run ngspice on PLL_PostLay.cir. We will get two plots. First is the . Second plot has the output and reference signal.
 
-Post layout simulation result :
+### Post-layout simulation plot with the signal sequence similar to Pre-layout
+
 ![image](https://user-images.githubusercontent.com/94952142/143243599-6531368f-c0c6-41ce-91ff-90a5714b1de1.png)
-Zoomed :
+
+### Zoomed Plot:
 ![image](https://user-images.githubusercontent.com/94952142/143243858-ecc539ac-7710-402d-9f85-d9cf4f035adf.png)
 
+### Output and Ref signal:
 ![image](https://user-images.githubusercontent.com/94952142/143244011-a037b11f-452a-45de-baed-4aeb11fcd624.png)
 
-Zoomed:
+### Zoomed:
 ![image](https://user-images.githubusercontent.com/94952142/143244163-09c81181-a39e-4c1b-9343-861f3ca4e4c2.png)
 
     
 ## Combining Layouts and creating GDS
-    To combine different blocks, 
-      - open empty design using `magic -T sky130A.tech`  
-      - Instantiate cells by going to `cell` - > `place instance`
-      - Use wire tool to make connections. (use `space` key and `space + space` key to enable/disable the wire tool)
-      - Extract netlist and perform post layout simulation. 
-      - After confirming the final design, save the file as `GDS` file by `File`->`Write GDS`.
+To combine different blocks, 
+  - open empty design using `magic -T sky130A.tech`  
+  - Instantiate cells by going to `cell` - > `place instance`
+  - Use wire tool to make connections. (use `space` key and `space + space` key to enable/disable the wire tool)
+  - Extract netlist and perform post layout simulation. 
+  - After confirming the final design, save the file as `GDS` file by `File`->`Write GDS`.
       
 ## Tapeout
 
-It means to send out final design to Fab, after preparing it.
-Preparation:
+Tapeout means to send out final design to Fab, after preparing it. This preparation includes:
 - I/O pads
 - Peripherals
 - Memory
 - Testing Mechanisms
 - Any other requirements
 
-Caravel is a type of SoC, on which the PLL block is a part. The block is designed with the provided specs and sent to integrate it in the SoC.
-The GDS with pin layout is provided by fab which needs to be instantiated along with the PLL block. After this, the connections are made between the PLL block pins and top level pins.
-And after making sure the final design with the Pin connections meet all the requirement, we send the final GDS back to fab where this is integrated on the SoC and then manufactured.
+Caravel is a type of SoC, on which the PLL block is a part. The block is designed with the provided specs and sent for integration into the SoC.
+The GDS with pin layout is provided by fab which needs to be instantiated along with the PLL block. After this, the connections are made between the PLL block pins and top level pins. And after making sure the final design with the Pin connections meet all the requirement, we send the final GDS back to fab where this is integrated on the SoC and then manufactured.
 
 # Conclusion
-This two -day workshop helped in getting familiar with the open source EDA tools and open source PDKS. The PLL basics was explained very clearly and design aspects of the circuit were introduced. This workshop also explained the tapeout related aspects of any design. This workshop has helped me gain better understanding of concepts and tools.     
+This two -day workshop helped in getting familiar with the open source EDA tools and open source PDKS. The PLL basics was explained very clearly and design aspects of the circuit were introduced. This workshop also explained the tapeout related aspects of any design. This workshop has helped me gain better understanding of concepts and tools.
+
+# References
+- [https://www.vsdiat.com/](https://www.vsdiat.com/)
+- [https://www.vlsisystemdesign.com/](https://www.vlsisystemdesign.com/)
+- [https://github.com/lakshmi-sathi/avsdpll_1v8](https://github.com/lakshmi-sathi/avsdpll_1v8)
+- [http://opencircuitdesign.com/magic/](http://opencircuitdesign.com/magic/)
+- [https://www.udemy.com/course/vsd-a-complete-guide-to-install-open-source-eda-tools/](https://www.udemy.com/course/vsd-a-complete-guide-to-install-open-source-eda-tools/)
+- [https://github.com/efabless/caravel-lite/blob/cda6c3ca1158b495f002bf90860941c3a9af1784/gds/user_analog_project_wrapper_empty.gds.gz](https://github.com/efabless/caravel-lite/blob/cda6c3ca1158b495f002bf90860941c3a9af1784/gds/user_analog_project_wrapper_empty.gds.gz)
+- [https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
+-[http://www.ece.iit.edu/~eoruklu/courses/ece429/tutorial/MAGIC1x.html](http://www.ece.iit.edu/~eoruklu/courses/ece429/tutorial/MAGIC1x.html)
