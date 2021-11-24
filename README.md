@@ -668,7 +668,8 @@ This two -day workshop helped in getting familiar with the open source EDA tools
 - [https://www.udemy.com/course/vsd-a-complete-guide-to-install-open-source-eda-tools/](https://www.udemy.com/course/vsd-a-complete-guide-to-install-open-source-eda-tools/)
 - [https://github.com/efabless/caravel-lite/blob/cda6c3ca1158b495f002bf90860941c3a9af1784/gds/user_analog_project_wrapper_empty.gds.gz](https://github.com/efabless/caravel-lite/blob/cda6c3ca1158b495f002bf90860941c3a9af1784/gds/user_analog_project_wrapper_empty.gds.gz)
 - [https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
--[http://www.ece.iit.edu/~eoruklu/courses/ece429/tutorial/MAGIC1x.html](http://www.ece.iit.edu/~eoruklu/courses/ece429/tutorial/MAGIC1x.html)
--Charge Pump paper: [https://ieeexplore.ieee.org/document/5548821](https://ieeexplore.ieee.org/document/5548821)
--Phase Frequency Divider paper: [https://www.sciencedirect.com/science/article/pii/S187770581301624X](https://www.sciencedirect.com/science/article/pii/S187770581301624X)
--VCO paper: [https://www.researchgate.net/publication/330244405_An_Improved_Performance_Ring_VCO_Analysis_and_Design](https://www.researchgate.net/publication/330244405_An_Improved_Performance_Ring_VCO_Analysis_and_Design)
+- [http://www.ece.iit.edu/~eoruklu/courses/ece429/tutorial/MAGIC1x.html](http://www.ece.iit.edu/~eoruklu/courses/ece429/tutorial/MAGIC1x.html)
+
+- Charge Pump paper: [https://ieeexplore.ieee.org/document/5548821](https://ieeexplore.ieee.org/document/5548821)
+- Phase Frequency Divider paper: [https://www.sciencedirect.com/science/article/pii/S187770581301624X](https://www.sciencedirect.com/science/article/pii/S187770581301624X)
+- VCO paper: [https://www.researchgate.net/publication/330244405_An_Improved_Performance_Ring_VCO_Analysis_and_Design](https://www.researchgate.net/publication/330244405_An_Improved_Performance_Ring_VCO_Analysis_and_Design)
