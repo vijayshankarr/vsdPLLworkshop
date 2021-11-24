@@ -13,7 +13,8 @@ And with VCO, we can control/vary the output frequency but its not noise free.
  
 So, we go for PLL to get the best of both, that is, output signals with no noise and the flexibility to vary the signal frequency.
 
-PLL control system:
+### PLL control system:
+
 ![2_8](https://user-images.githubusercontent.com/94952142/143245146-50d0dc6e-e466-46a1-a45e-1cc3bedcdadb.png)
 
 ## Phase Frequency Detector
@@ -24,14 +25,19 @@ We can use XOR gate to check if the reference signal and the output signal are d
 
 But there is a catch ! We won't know if the Output signal lags/leads the ref signal. So, we need to distinguish both the cases.
 To fix this, we use separate UP and DOWN signals to identify lag and lead.
+
 UP -> When the Output signal should be sped up
+
 DOWN -> When the Output signal should be slowed down
 
 When falling edge of OUT to falling edge of REF -> DOWN signal
+
 Falling edge of REF to falling edge of OUT -> UP signal
 
 The XOR value not only gives the idea about phase but can also be used to check frequency difference.
+
 When the frequency of OUT is higher -> DOWN gets activated
+
 When the freq of REF signal is higher -> UP gets activated
 
 The best way to detect the falling edge/rising edge is by using flipflops.
@@ -82,14 +88,14 @@ So, by using a current starving ring oscillator, we can control the output frequ
 
 ![image](https://user-images.githubusercontent.com/94952142/143259608-2d2d585c-a677-40a2-aa07-ef7427d3772b.png)
 
-###Important terms :
+### Important terms :
 - Lock Range : Range of frequencies for which the PLL is able to stay locked. This is limited by dead zone.
 - Capture Range : Range of frequencies for which the PLL can get locked from a free running state. This depends on the bandwidth of Low Pass filter.
 - Settling time : Time take to get locked from a free running mode. This depends on the current to capacitor.
 
 
 ## Frequency Divider
-For toggle Flipflop, output is half the frequency of input. This can be designe using a D-Flipflop with an inverter feeding the output back to input. 
+Frequency Divider circuit is used for get multiplying the output frequency. We can implement this using Toggle flip-flop. For toggle flipflop, output is half the frequency of input. This can be designed using a D-Flipflop with an inverter feeding the output back to input. 
 This gives frequency division by 2. In the same way, we can stack the T-flipflop to get frequency division by 8 and so on.
 
 ### Circuit and Operation:
@@ -98,13 +104,14 @@ This gives frequency division by 2. In the same way, we can stack the T-flipflop
 
 
 ## Tools used 
-In this workshop, we are mainly going to use two tools, namely
+In this workshop, we are mainly used two tools, namely
 - magic <- For layout design and extraction
 - ngspice <- For netlist simulation
 
-I created my workspace in my laptop. To do this you can refer to this free Udemy [course](https://www.udemy.com/course/vsd-a-complete-guide-to-install-open-source-eda-tools/)
+For this workshop, I created my workspace in my laptop by installing Ubuntu in Virtual Box. You can refer to this free Udemy [course](https://www.udemy.com/course/vsd-a-complete-guide-to-install-open-source-eda-tools/) to know more details.
 
 ## Development flow
+The IC design development flow is divided into the following steps:
 - Specifications
 - SPICE-level circuit development
 - PreLayout Simulation
@@ -115,8 +122,7 @@ I created my workspace in my laptop. To do this you can refer to this free Udemy
 After Post Layout Simulation, we may have to go through the previous steps to bring the design closer to the specifications.
 
 ## Introduction to PDK
-Here, are going to use sky130 PDK to design the PLL. The PDK is normally provided by the foundry which provides all the necessary components required to design any circuit.
-In this project, we mainly are going to use nmos and pmos, so our focus will be on these cells.
+In this workshop, we used sky130 PDK to design the PLL. The PDK is normally provided by the foundry which provides all the necessary components required to design any circuit.
 
 ## Specification
 - PVT
