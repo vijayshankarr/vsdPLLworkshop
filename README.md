@@ -1,7 +1,7 @@
 # VSD-IAT: Phase Locker Loop IC Design using open-souce PDKs by Google Skywater
 
 # Introduction
-This workshop conducted by [VLSI System Design]( https://www.vlsisystemdesign.com/) which covered the concepts of PLL Design and implementation of the same using Open-Source Google-Skywater PDK. We were also introduced to open source softwares for simulation, layout design and extraction. inished layouts and details of how a tapeout is done.
+This workshop conducted by [VLSI System Design]( https://www.vlsisystemdesign.com/) covered the concepts of PLL Design and implementation of the same using Open-Source Google-Skywater PDK. We were also introduced to open source softwares for simulation, layout design and extraction. inished layouts and details of how a tapeout is done.
 
 # Day 1: PLL theory and Lab Setup
   The first day covered the PLL theory and Lab setup.
